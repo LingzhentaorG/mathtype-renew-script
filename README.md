@@ -104,6 +104,47 @@ MathType 7.8.2 中文版官方安装包，支持静默安装参数。
 
 ### 方法一：右键运行（推荐）
 
+#### 前提条件：配置 .py 文件右键运行
+
+Windows 默认不支持直接右键运行 .py 文件，需要进行以下配置：
+
+**步骤 1：安装 Python（已安装可跳过）**
+1. 下载并安装 Python 3.6+：https://www.python.org/downloads/
+2. **重要**：安装时勾选 **"Add Python to PATH"** 和 **"Install py launcher"**
+
+**步骤 2：配置文件关联**
+
+以管理员身份运行 CMD，执行以下命令：
+
+```batch
+:: 将 .py 文件关联到 Python
+assoc .py=Python.File
+
+:: 设置打开方式
+ftype Python.File="C:\Windows\py.exe" "%%1" %%*
+```
+
+**步骤 3：添加右键菜单（可选，推荐）**
+
+以管理员身份运行 CMD，执行以下注册表命令：
+
+```batch
+:: 添加"以管理员身份运行"到 .py 文件的右键菜单
+reg add "HKEY_CLASSES_ROOT\Python.File\shell\runas" /ve /t REG_SZ /d "以管理员身份运行" /f
+reg add "HKEY_CLASSES_ROOT\Python.File\shell\runas\command" /ve /t REG_SZ /d "\"C:\Windows\py.exe\" \"%1\" %*" /f
+
+:: 添加普通运行选项
+reg add "HKEY_CLASSES_ROOT\Python.File\shell\open" /ve /t REG_SZ /d "运行" /f
+reg add "HKEY_CLASSES_ROOT\Python.File\shell\open\command" /ve /t REG_SZ /d "\"C:\Windows\py.exe\" \"%1\" %*" /f
+```
+
+**验证配置：**
+配置完成后，右键点击 `renew_mathtype_trial.py` 文件，应该能看到：
+- 🏃 **"运行"** 选项
+- 🛡️ **"以管理员身份运行"** 选项
+
+#### 运行脚本
+
 1. 找到 `renew_mathtype_trial.py` 文件
 2. **右键点击** → 选择 **"以管理员身份运行"**
 3. 等待脚本自动完成所有操作
