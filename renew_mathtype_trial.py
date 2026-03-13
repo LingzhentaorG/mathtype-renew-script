@@ -198,3 +198,72 @@ class MathTypeRenewer:
             os.path.join(os.environ.get("ProgramFiles(x86)", ""), "MathType", "MathType.exe"),
             os.path.join(os.environ.get("ProgramFiles", ""), "MathType", "MathType.exe")
         ]
+        
+        for path in possible_paths:
+            if os.path.exists(path):
+                print(f"✓ 验证成功: 找到MathType.exe")
+                print(f"  路径: {path}")
+                return True
+        
+        print("✗ 验证失败: 未找到MathType.exe")
+        return False
+    
+    def run(self):
+        """执行完整的续杯流程"""
+        print("="*50)
+        print("MathType 7.8 试用期续杯工具")
+        print("="*50)
+        print()
+        
+        # 请求管理员权限
+        self.run_as_admin()
+        
+        # 步骤1: 静默卸载
+        print("\n【步骤1/5】卸载现有MathType...")
+        self.silent_uninstall()
+        
+        # 步骤2: 删除安装目录
+        print("\n【步骤2/5】清理安装目录...")
+        self.delete_directory()
+        
+        # 步骤3: 清理注册表
+        print("\n【步骤3/5】清理注册表...")
+        self.delete_registry_keys()
+        
+        # 步骤4: 重新安装
+        print("\n【步骤4/5】重新安装MathType...")
+        if not self.install_mathtype():
+            print("\n安装失败，请检查安装包是否存在")
+            return False
+        
+        # 步骤5: 验证安装
+        print("\n【步骤5/5】验证安装...")
+        if self.verify_installation():
+            print("\n" + "="*50)
+            print("✓ MathType续杯成功！")
+            print("✓ 试用期已重置为30天")
+            print("="*50)
+            return True
+        else:
+            print("\n" + "="*50)
+            print("✗ 安装验证失败，请手动检查")
+            print("="*50)
+            return False
+
+
+def main():
+    """主函数"""
+    try:
+        renewer = MathTypeRenewer()
+        renewer.run()
+    except KeyboardInterrupt:
+        print("\n\n用户取消了操作")
+    except Exception as e:
+        print(f"\n发生错误: {e}")
+    finally:
+        print("\n按Enter键退出...")
+        input()
+
+
+if __name__ == "__main__":
+    main()
